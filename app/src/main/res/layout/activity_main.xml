@@ -23,12 +23,18 @@
         android:layout_below="@+id/tvHeader"
         android:background="@color/colorPrimary" />
 
-    <android.support.v7.widget.AppCompatTextView
-        android:id="@+id/tvXAxiz"
+    <LinearLayout
+        android:id="@+id/ll"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:gravity="center"
+        android:orientation="horizontal">
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/tvXAxiz"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:padding="10dp"
         android:text="X-Axis"
         android:textColor="@color/colorPrimaryDark"
@@ -36,10 +42,8 @@
 
     <android.support.v7.widget.AppCompatTextView
         android:id="@+id/tvYAxis"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/tvXAxiz"
-        android:gravity="center"
         android:padding="10dp"
         android:text="Y-Axis"
         android:textColor="@color/colorPrimaryDark"
@@ -47,30 +51,44 @@
 
     <android.support.v7.widget.AppCompatTextView
         android:id="@+id/tvZAxis"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/tvYAxis"
         android:gravity="center"
         android:padding="10dp"
         android:text="Z-Axis"
         android:textColor="@color/colorPrimaryDark"
         android:textSize="18sp" />
-
-    <android.support.v7.widget.AppCompatTextView
-        android:id="@+id/accSum"
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/ll2"
+        android:layout_below="@+id/ll"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/tvZAxis"
+
         android:gravity="center"
+        android:orientation="horizontal">
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/accMin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:padding="10dp"
-        android:text="accSum:"
+        android:text="Max:"
         android:textColor="@color/colorPrimaryDark"
         android:textSize="18sp" />
+    <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/accMax"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text="Min:"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="18sp" />
+    </LinearLayout>
     <android.support.v7.widget.AppCompatTextView
         android:id="@+id/countDownTimer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/accSum"
+        android:layout_below="@+id/ll2"
         android:gravity="center"
         android:padding="10dp"
         android:text="countDownTimer:"
@@ -85,7 +103,7 @@
 
         android:layout_centerInParent="true"
         android:padding="30dp"
-        android:text="Reset Timer"
+        android:text="重設計時"
         android:visibility="invisible"
         android:textColor="@color/red"
         android:textSize="20sp" />

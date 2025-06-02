@@ -9,9 +9,12 @@ import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
+import android.icu.text.DecimalFormat
 import android.media.Ringtone
 import android.media.RingtoneManager
 import android.os.Bundle
+import android.os.VibrationEffect
+import android.os.Vibrator
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.widget.Button
@@ -21,18 +24,23 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity(), SensorEventListener {
 
+    private val countDownThreadHold = 30* 60 *1000 //倒數時間
+    private val alertThreadHold = 10 *1000 //未重設時間
+    private val resetThreadHold =1.7f
+
     private var sensorManager: SensorManager? = null
 
     private var initTime = System.currentTimeMillis()
 
     private var mAccMax:Float =0.0F
-    private var countDownThreadHold = 1 * 15 *1000
+    private var mAccMin:Float =50.0F
+
+
     val mHandler = Handler()
     private lateinit var btn: Button
     private val ringtoneUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
+    private lateinit var vibrator: Vibrator
     private lateinit var ringtone: Ringtone
-
-
 
 
     override fun onAccuracyChanged(s: Sensor?, i: Int) {
@@ -52,7 +60,9 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         ringtone= RingtoneManager.getRingtone(this.applicationContext, ringtoneUri)
         resetButton.setOnClickListener{
             initTime = System.currentTimeMillis()
+            countDownTimer.setTextColor(getResources().getColor(R.color.colorPrimaryDark))
         }
+        vibrator=getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
         countDownStart()
     }
 
@@ -67,16 +77,28 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
                 if(timeDiff <= countDownThreadHold){
                     val min = ((countDownThreadHold- timeDiff) /1000) /60
                     val sec = ((countDownThreadHold- timeDiff )/ 1000) %60
-                    countDownTimer.text = "CountDown: ".plus(min.toString()).plus(":").plus(sec.toString())
+                    countDownTimer.text = "CountDown: ${min.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}"
                     resetButton.setVisibility(View.INVISIBLE);
+
                     if (ringtone.isPlaying) {
                         ringtone.stop()
+                        vibrator.cancel()
                     }
 
                 }else{
+                    if((timeDiff-countDownThreadHold) <= alertThreadHold){
                     resetButton.setVisibility(View.VISIBLE);
                     if (!ringtone.isPlaying) {
+
+                        countDownTimer.setTextColor(getResources().getColor(R.color.red))
+                        vibrator.vibrate(200)
                         ringtone.play()
+                    }
+                    }else{
+
+                        vibrator.vibrate(200)
+                        ringtone.play()
+                        Toast.makeText(this@MainActivity, "逾時未重設!!!!", Toast.LENGTH_SHORT).show();
                     }
                 }
 
@@ -87,24 +109,32 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         runnable.run()
 
     }
+    private fun converStringToFormat(input: String):String{
+        if(input.length>=6){
+            return input.substring(0,6)
+        }else{
+            return input
+        }
+    }
 
     private fun getAccelerometer(event: SensorEvent) {
         // Movement
-
         val xVal = event.values[0]
         val yVal = event.values[1]
         val zVal = event.values[2]
-        tvXAxiz.text = "X Value: ".plus(xVal.toString())
-        tvYAxis.text = "Y Value: ".plus(yVal.toString())
-        tvZAxis.text = "Z Value: ".plus(zVal.toString())
+        tvXAxiz.text = "X: ".plus(converStringToFormat(xVal.toString()))
+        tvYAxis.text = "Y: ".plus(converStringToFormat(yVal.toString()))
+        tvZAxis.text = "Z: ".plus(converStringToFormat(zVal.toString()))
 
         val accelerationSquareRoot = (xVal * xVal + yVal * yVal + zVal * zVal) / (SensorManager.GRAVITY_EARTH * SensorManager.GRAVITY_EARTH)
         if(accelerationSquareRoot > mAccMax){
             mAccMax=accelerationSquareRoot
         }
-        accSum.text = "Max Acc: ".plus(mAccMax.toString())
 
-        if (accelerationSquareRoot >= 1.7) {
+        accMax.text = "最大加速度: ".plus(converStringToFormat(mAccMax.toString()))
+        accMin.text = "加速度: ".plus(converStringToFormat(accelerationSquareRoot.toString()))
+
+        if (accelerationSquareRoot >= resetThreadHold) {
             initTime = System.currentTimeMillis()
         }
     }
