@@ -1,4 +1,4 @@
 <resources>
-    <string name="app_name">Accelerometer Sensor</string>
-    <string name="applicant_name">Android Codility</string>
+    <string name="app_name">加速度計測試</string>
+    <string name="applicant_name">動作偵測</string>
 </resources>

@@ -9,6 +9,8 @@ import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
+import android.media.Ringtone
+import android.media.RingtoneManager
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.View
@@ -20,15 +22,15 @@ import kotlinx.android.synthetic.main.activity_main.*
 class MainActivity : AppCompatActivity(), SensorEventListener {
 
     private var sensorManager: SensorManager? = null
-    private var color = false
-    private var isInit = false
+
     private var initTime = System.currentTimeMillis()
-    private var runCounter = 0
-    private var mAccelCurrent:Float =0.0F
+
     private var mAccMax:Float =0.0F
-    private var countDownThreadHold = 1 * 30 *1000
+    private var countDownThreadHold = 1 * 15 *1000
     val mHandler = Handler()
     private lateinit var btn: Button
+    private val ringtoneUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
+    private lateinit var ringtone: Ringtone
 
 
 
@@ -47,11 +49,11 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         setContentView(R.layout.activity_main)
         resetButton.setVisibility(View.INVISIBLE)
         sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
-        countDownStart()
-
+        ringtone= RingtoneManager.getRingtone(this.applicationContext, ringtoneUri)
         resetButton.setOnClickListener{
             initTime = System.currentTimeMillis()
         }
+        countDownStart()
     }
 
 
@@ -67,9 +69,15 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
                     val sec = ((countDownThreadHold- timeDiff )/ 1000) %60
                     countDownTimer.text = "CountDown: ".plus(min.toString()).plus(":").plus(sec.toString())
                     resetButton.setVisibility(View.INVISIBLE);
+                    if (ringtone.isPlaying) {
+                        ringtone.stop()
+                    }
 
                 }else{
                     resetButton.setVisibility(View.VISIBLE);
+                    if (!ringtone.isPlaying) {
+                        ringtone.play()
+                    }
                 }
 
                 mHandler.postDelayed(this, 500)
