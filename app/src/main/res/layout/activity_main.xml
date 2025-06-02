@@ -56,4 +56,35 @@
         android:textColor="@color/colorPrimaryDark"
         android:textSize="18sp" />
 
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/accSum"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvZAxis"
+        android:gravity="center"
+        android:padding="10dp"
+        android:text="accSum:"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="18sp" />
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/countDownTimer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/accSum"
+        android:gravity="center"
+        android:padding="10dp"
+        android:text="countDownTimer:"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="18sp" />
+
+    <Button
+        android:id="@+id/resetButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/countDownTimer"
+        android:gravity="center"
+        android:padding="10dp"
+        android:text="Reset Timer"
+        android:visibility="invisible" />
+
 </RelativeLayout>
